@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>their story elang_zeyran</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d3a5c;--bar:#ffffffd9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8f3ff;--bar:#15293fd9}}
+:root[data-theme="dark"]{--ink:#e8f3ff;--bar:#15293fd9}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;display:flex;flex-direction:column;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:linear-gradient(#6fb7ea,#cfeaff 62%,#f4fbff);overflow:hidden}
+.fl{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.fl span{position:absolute;bottom:-14vh;font-size:34px;opacity:.55;animation:up 24s linear infinite}
+.fl .c{bottom:auto;font-size:54px;opacity:.8;animation:dr 70s linear infinite}
+@keyframes up{to{transform:translateY(-120vh)}}
+@keyframes dr{from{transform:translateX(-25vw)}to{transform:translateX(125vw)}}
+header,main,.row{position:relative;z-index:1}
+header{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bar);backdrop-filter:blur(8px)}
+#np{flex:1;min-width:0;font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#vol{width:78px;accent-color:#3b8fd6}
+.eq{display:flex;gap:2px;align-items:flex-end;height:18px}
+.eq i{width:3px;height:25%;background:#3b8fd6;border-radius:2px}
+.playing .eq i{animation:eq .7s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}.eq i:nth-child(4){animation-delay:.45s}
+@keyframes eq{to{height:100%}}
+main{flex:1;min-height:0;container-type:size;display:grid;place-items:center}
+#stage{width:min(100cqw,75cqh);aspect-ratio:3/4;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 10px 30px #0b3a6a40;container-type:inline-size;touch-action:none;transition:background .4s}
+#stage.flip{animation:flip .5s ease}
+@keyframes flip{from{transform:perspective(900px) rotateY(-14deg) translateX(-3%);opacity:.2}}
+.it{position:absolute;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.it.sel{outline:2px dashed #3b8fd6;outline-offset:3px}
+.hd{display:none;position:absolute;right:-10px;bottom:-10px;width:22px;height:22px;border-radius:50%;background:#3b8fd6;border:2px solid #fff;cursor:nwse-resize;z-index:3}
+.sel .hd{display:block}
+.photo{aspect-ratio:.82;background:#fff;padding:3.5% 3.5% 15%;box-shadow:0 2px 3px #0003,0 8px 18px #0002}
+.photo::before{content:"";position:absolute;top:-2.5%;left:38%;width:24%;height:6%;background:#ffe08acc;transform:rotate(-4deg)}
+.pi{width:100%;height:100%;background:#dcebf7 center/cover;display:grid;place-items:center;text-align:center;font-size:3.2cqw;color:#5d7f9e;line-height:1.4}
+.cap{position:absolute;left:6%;right:6%;bottom:2%;height:11%;font:700 4cqw/1.1 Caveat,cursive;text-align:center;color:#46627f;overflow:hidden;outline:none}
+.cap:empty::before{content:"caption…";opacity:.4}
+.text{text-align:center;font-family:Caveat,cursive;font-weight:700;line-height:1.15;word-break:break-word;white-space:pre-wrap}
+.tx{outline:none;display:block;min-height:1em}
+.tx[contenteditable="true"]{background:#fff8;border-radius:6px;cursor:text}
+.sticker{line-height:1}.house svg{width:100%;display:block}
+.b{border:0;border-radius:14px;background:#fff;color:#1d3a5c;min-width:40px;height:44px;padding:0 8px;font:800 18px Nunito,sans-serif;box-shadow:0 2px 0 #b9d9f2;cursor:pointer}
+.b:hover{background:#fff6d6}.b:active{transform:translateY(1px)}.b:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:4px;justify-content:center;align-items:center;padding:4px 6px;background:var(--bar);backdrop-filter:blur(8px)}
+.row[hidden],.pop[hidden]{display:none}
+#pg{min-width:54px;text-align:center;font-weight:800}
+.pop{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(112px + env(safe-area-inset-bottom,0px));background:var(--bar);backdrop-filter:blur(8px);border-radius:18px;padding:10px;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:94vw;box-shadow:0 8px 24px #0004}
+#toast{position:fixed;z-index:9;left:50%;top:60px;transform:translateX(-50%);background:#1d3a5c;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="fl" id="fl" aria-hidden="true"></div>
+<audio id="au" loop preload="none" src="musik.mp3"></audio>
+<header id="hd">
+  <button class="b" id="play" aria-label="Putar atau jeda musik">▶</button>
+  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span id="np">Tekan ▶ untuk memutar musik</span>
+  <input id="vol" type="range" min="0" max="1" step=".05" value=".6" aria-label="Volume">
+</header>
+<main><div id="stage"></div></main>
+<div class="row" id="tt" hidden>
+  <button class="b" id="sm" aria-label="Perkecil tulisan">A−</button>
+  <button class="b" id="bg2" aria-label="Perbesar tulisan">A+</button>
+  <input type="color" id="cin" value="#1d3a5c" aria-label="Warna tulisan" style="width:44px;height:40px;border:0;background:none">
+</div>
+<div class="row">
+  <button class="b" id="bPhoto" aria-label="Tambah foto">📷</button>
+  <button class="b" id="bText" aria-label="Tambah teks">T</button>
+  <button class="b" id="bSt" aria-label="Tambah stiker">✨</button>
+  <button class="b" id="bBg" aria-label="Ganti latar">🖼</button>
+  <button class="b" id="bUn" aria-label="Undo">↶</button>
+  <button class="b" id="bRe" aria-label="Redo">↷</button>
+  <button class="b" id="bDel" aria-label="Hapus">🗑</button>
+  <button class="b" id="bSave" aria-label="Simpan">💾</button>
+</div>
+<div class="row">
+  <button class="b" id="prev" aria-label="Sebelumnya">◀</button>
+  <span id="pg">1/15</span>
+  <button class="b" id="next" aria-label="Berikutnya">▶</button>
+  <button class="b" id="bTh" aria-label="Pilih slide">▦</button>
+  <button class="b" id="bEx" aria-label="Export album">⬇</button>
+  <button class="b" id="bIm" aria-label="Import album">⬆</button>
+</div>
+<div class="pop" id="sp" hidden></div>
+<div class="pop" id="th" hidden></div>
+<input type="file" id="fi" accept="image/*" multiple hidden>
+<input type="file" id="fj" accept=".json,application/json" hidden>
+<div id="toast"></div>
+<script>
+// Ganti nama file ini dengan musikmu sendiri (taruh di folder yang sama dengan index.html)
+const MUSIC_URL="musik.mp3";
+const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
+const TITLES=["Petualangan Kita","Perkenalan","Kolase Pertama","Satu Momen","Di Atas Awan","Potongan Kecil","Cerita Panjang","Perangko dan Stiker","Kartu Pos","Roll Film","Teman Petualang","Langit Biru","Halaman Bebas","Kumpulan Kenangan","Sampai Jumpa"];
+const BG=["linear-gradient(#7cc0f0,#dff2ff)","linear-gradient(#fff4c9,#ffe9a8)","linear-gradient(#b8dcf7,#f6fbff)","linear-gradient(#cfe3ff,#ffd9e2)","linear-gradient(#17305a,#2d5a8e)"];
+const FR=[[],[[14,14,72,-2]],[[7,13,40,-4],[53,15,40,4],[9,52,40,3],[52,51,40,-3]],[[20,15,60,3]],[[14,18,62,-3]],[[5,13,28,-4],[36,12,28,3],[67,14,28,-2],[12,42,34,3],[54,43,34,-3]],[[8,13,46,-3]],[[6,13,40,-4],[52,20,40,3],[22,55,44,-2]],[[12,16,76,-1]],[[36,13,28,0],[36,40,28,0],[36,67,28,0]],[[8,13,52,-3]],[[5,14,40,-3],[55,14,40,3],[30,54,40,-2]],[[10,12,80,2]],[[4,13,30,-3],[36,13,30,2],[68,13,30,-2],[4,43,30,2],[36,43,30,-2],[68,43,30,3]],[]];
+const BT={0:80,1:86,3:80,4:84,5:82,6:60,8:88,10:88,12:88,13:75,14:80};
+const TX={0:"Album kenangan petualangan kita",6:"Tulis cerita panjangmu di sini. Ketuk teks ini sekali lagi untuk mengedit, lalu geser atau ubah ukurannya.",14:"Terima kasih sudah ikut terbang 🎈"};
+const DEC={0:[["☁️",4,68,26],["🎈",78,64,15]],2:[["⭐",85,3,10]],4:[["☁️",62,62,26],["🎈",4,66,14],["🎈",82,78,14]],6:[["🎈",80,70,14]],7:[["✉️",36,38,14],["⭐",90,6,8]],8:[["💌",78,4,16]],10:[["👴",60,62,20],["🧒",8,70,18],["🐶",36,72,20],["🐦",72,40,20]],11:[["☁️",78,4,20],["🎈",3,4,12]],13:[["⭐",4,3,8]],14:[["☁️",4,62,26],["🎈",78,66,15],["🎈",70,72,14]]};
+const HOUSE=`<svg viewBox="0 0 200 200"><g stroke="#9a8068" stroke-width="1.2" fill="none"><path d="M40 82L100 142M70 56L100 142M100 46L100 142M130 56L100 142M160 82L100 142"/></g><circle cx="40" cy="62" r="21" fill="#ff8fa3"/><circle cx="70" cy="36" r="21" fill="#ffd45e"/><circle cx="100" cy="26" r="21" fill="#6db7ee"/><circle cx="130" cy="36" r="21" fill="#b79cf0"/><circle cx="160" cy="62" r="21" fill="#7fd6b2"/><rect x="68" y="162" width="64" height="36" fill="#f6d28b"/><path d="M60 164L100 136L140 164Z" fill="#e0788c"/><rect x="92" y="176" width="16" height="22" fill="#6a9fd0"/></svg>`;
+const STK=["🎈","☁️","⭐","🏠","👴","🧒","🐶","🐦","💌","🌈","✉️","🎀","🌤️","🧡","📮"];
+let S,P={},cur=0,sel=null,undo=[],redo=[],pend=null,tm,ed=null;
+const st=$("#stage"),fi=$("#fi"),au=$("#au");
+const get=id=>S[cur].it.find(o=>o.id==id);
+
+// penyimpanan (IndexedDB)
+let dbp;try{dbp=new Promise(ok=>{const r=indexedDB.open("up-book",1);r.onupgradeneeded=()=>r.result.createObjectStore("k");r.onsuccess=()=>ok(r.result);r.onerror=()=>ok(null)})}catch(e){dbp=Promise.resolve(null)}
+async function idbGet(){try{const d=await dbp;return await new Promise(ok=>{const q=d.transaction("k").objectStore("k").get("d");q.onsuccess=()=>ok(q.result);q.onerror=()=>ok()})}catch(e){}}
+async function idbPut(v){try{const d=await dbp;d.transaction("k","readwrite").objectStore("k").put(v,"d");return true}catch(e){return false}}
+function dirty(){clearTimeout(tm);tm=setTimeout(saveNow,700)}
+async function saveNow(){clearTimeout(tm);toast(await idbPut({S,P})?"Tersimpan":"Penyimpanan browser tidak tersedia")}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),2200)}
+
+function init(){const mk=(t,o)=>({id:uid(),t,...o});
+S=TITLES.map((ti,i)=>{const dark=i==9,c=dark?"#ffffff":"#1d3a5c",cov=i==0||i==14,it=[];
+if(cov)it.push(mk("house",{x:25,y:6,w:50}));
+it.push(mk("text",{x:6,y:cov?58:3,s:cov?11:8,w:88,c,v:ti}));
+FR[i].forEach(f=>it.push(mk("photo",{x:f[0],y:f[1],w:f[2],r:f[3],p:null,cap:""})));
+if(BT[i]!=null)it.push(mk("text",{x:8,y:BT[i],s:i==6?4.6:5,w:84,c,v:TX[i]||"Tulis ceritamu di sini…"}));
+(DEC[i]||[]).forEach(d=>it.push(mk("sticker",{x:d[1],y:d[2],w:d[3],e:d[0]})));
+return{bg:dark?4:i%4,it}})}
+
+function apply(d,o){const s=d.style;s.left=o.x+"%";s.top=o.y+"%";s.width=o.w+"%";
+if(o.t=="text"){s.fontSize=o.s+"cqw";s.color=o.c}
+if(o.t=="sticker")s.fontSize=o.w*.85+"cqw";
+if(o.t=="photo")s.transform="rotate("+(o.r||0)+"deg)"}
+function el(o){const d=document.createElement("div");d.className="it "+o.t+(o.id==sel?" sel":"");d.dataset.id=o.id;
+d.innerHTML=o.t=="photo"?'<div class="pi">'+(P[o.p]?"":"📷<br>ketuk untuk pilih foto")+'</div><div class="cap" contenteditable="true" spellcheck="false"></div>':o.t=="text"?'<span class="tx"></span>':o.t=="house"?HOUSE:"<span></span>";
+if(o.t=="photo"){if(P[o.p])d.firstChild.style.backgroundImage="url("+P[o.p]+")";d.lastChild.textContent=o.cap||""}
+if(o.t=="text")d.firstChild.textContent=o.v;
+if(o.t=="sticker")d.firstChild.textContent=o.e;
+d.insertAdjacentHTML("beforeend",'<i class="hd"></i>');apply(d,o);return d}
+function render(){st.style.background=BG[S[cur].bg];st.replaceChildren(...S[cur].it.map(el));$("#pg").textContent=(cur+1)+"/15";$("#sp").hidden=$("#th").hidden=true;sync()}
+function select(id){sel=id;st.querySelectorAll(".it").forEach(x=>x.classList.toggle("sel",x.dataset.id==id));sync()}
+function sync(){const o=sel&&get(sel);$("#tt").hidden=!(o&&o.t=="text");$("#bDel").disabled=!o;if(o&&o.t=="text")$("#cin").value=o.c.length==4?"#ffffff":o.c;$("#bUn").disabled=!undo.length;$("#bRe").disabled=!redo.length}
+function pushU(b){undo.push(b);if(undo.length>40)undo.shift();redo=[];dirty();sync()}
+function act(fn){const b=JSON.stringify(S);fn();pushU(b);render()}
+function go(n){cur=Math.max(0,Math.min(14,n));sel=null;render();st.classList.remove("flip");void st.offsetWidth;st.classList.add("flip")}
+
+function edit(d){const tx=d.querySelector(".tx");tx.contentEditable=true;tx.focus();const r=document.createRange();r.selectNodeContents(tx);r.collapse(false);const g=getSelection();g.removeAllRanges();g.addRange(r)}
+st.addEventListener("pointerdown",e=>{
+const ce=e.target.closest('[contenteditable="true"]'),d=e.target.closest(".it");
+if(ce){if(d)select(d.dataset.id);return}
+if(!d){select(null);return}
+const o=get(d.dataset.id),was=sel==o.id,hd=e.target.classList.contains("hd");select(o.id);
+const r=st.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,b=JSON.stringify(S),x=o.x,y=o.y,w=o.w,s=o.s;let mv=0;
+const m=ev=>{const dx=(ev.clientX-sx)/r.width*100,dy=(ev.clientY-sy)/r.height*100;mv=Math.max(mv,Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy));if(mv<4)return;
+if(hd){if(o.t=="text")o.s=Math.max(2,s+dx*.4);else o.w=Math.max(8,w+dx)}else{o.x=x+dx;o.y=y+dy}apply(d,o)};
+const u=()=>{removeEventListener("pointermove",m);removeEventListener("pointerup",u);removeEventListener("pointercancel",u);
+if(mv>=4)pushU(b);else if(!hd){if(o.t=="text"&&was)edit(d);else if(o.t=="photo"&&!P[o.p]){pend=o.id;fi.click()}}};
+addEventListener("pointermove",m);addEventListener("pointerup",u);addEventListener("pointercancel",u)});
+st.addEventListener("input",e=>{const d=e.target.closest(".it"),o=d&&get(d.dataset.id);if(!o)return;if(e.target.classList.contains("cap"))o.cap=e.target.textContent;else o.v=e.target.textContent;dirty()});
+st.addEventListener("focusin",()=>{ed=JSON.stringify(S)});
+st.addEventListener("focusout",e=>{if(ed&&ed!=JSON.stringify(S))pushU(ed);ed=null;if(e.target.classList.contains("tx"))e.target.contentEditable=false});
+
+// foto
+function shrink(f){return new Promise(ok=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.82))};im.onerror=()=>ok(null);im.src=u})}
+fi.onchange=async()=>{const fs=[...fi.files];fi.value="";const b=JSON.stringify(S);let n=0;
+for(const f of fs){const u=await shrink(f);if(!u)continue;const id=uid();P[id]=u;let o=pend&&n==0?get(pend):null;
+if(!o||o.t!="photo"){o={id:uid(),t:"photo",x:20+n*6,y:25+n*6,w:42,r:n*3-3,cap:""};S[cur].it.push(o)}o.p=id;n++}
+pend=null;if(n){pushU(b);render()}};
+$("#bPhoto").onclick=()=>{const o=sel&&get(sel);pend=o&&o.t=="photo"&&!P[o.p]?sel:null;fi.click()};
+
+// teks, stiker, latar
+$("#bText").onclick=()=>{let id;act(()=>{id=uid();S[cur].it.push({id,t:"text",x:10,y:45,s:6,w:80,c:S[cur].bg==4?"#ffffff":"#1d3a5c",v:"Tulis di sini"})});select(id);edit(st.querySelector('[data-id="'+id+'"]'))};
+$("#sm").onclick=()=>{const o=get(sel);if(o)act(()=>o.s=Math.max(2,o.s*.9));select(o&&o.id)};
+$("#bg2").onclick=()=>{const o=get(sel);if(o)act(()=>o.s=Math.min(30,o.s*1.1));select(o&&o.id)};
+$("#cin").oninput=e=>{const o=get(sel);if(!o)return;o.c=e.target.value;const d=st.querySelector(".sel");if(d)apply(d,o);dirty()};
+STK.forEach(e=>{const b=document.createElement("button");b.className="b";b.textContent=e;b.setAttribute("aria-label","Stiker "+e);b.onclick=()=>{let id=uid();act(()=>S[cur].it.push(e=="🏠"?{id,t:"house",x:30,y:30,w:40}:{id,t:"sticker",x:35,y:35,w:16,e}));select(id);$("#sp").hidden=true};$("#sp").append(b)});
+$("#bSt").onclick=()=>{$("#th").hidden=true;$("#sp").hidden=!$("#sp").hidden};
+for(let i=0;i<15;i++){const b=document.createElement("button");b.className="b";b.textContent=i+1;b.onclick=()=>go(i);$("#th").append(b)}
+$("#bTh").onclick=()=>{$("#sp").hidden=true;$("#th").hidden=!$("#th").hidden};
+$("#bBg").onclick=()=>act(()=>S[cur].bg=(S[cur].bg+1)%BG.length);
+$("#bDel").onclick=()=>{if(!sel)return;act(()=>S[cur].it=S[cur].it.filter(o=>o.id!=sel));sel=null;sync()};
+$("#bUn").onclick=()=>{if(!undo.length)return;redo.push(JSON.stringify(S));S=JSON.parse(undo.pop());sel=null;render();dirty()};
+$("#bRe").onclick=()=>{if(!redo.length)return;undo.push(JSON.stringify(S));S=JSON.parse(redo.pop());sel=null;render();dirty()};
+$("#bSave").onclick=saveNow;
+// export / import album (album.json)
+$("#bEx").onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({v:1,S,P})],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="album.json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);toast("album.json diunduh. Unggah ke GitHub.")};
+const fj=$("#fj");$("#bIm").onclick=()=>fj.click();
+fj.onchange=async()=>{const f=fj.files[0];fj.value="";if(!f)return;try{const d=JSON.parse(await f.text());if(!d.S||d.S.length!=15)throw 0;undo=[];redo=[];S=d.S;P=d.P||{};sel=null;cur=0;render();dirty()}catch(e){toast("File album tidak valid")}};
+$("#prev").onclick=()=>go(cur-1);$("#next").onclick=()=>go(cur+1);
+addEventListener("keydown",e=>{if(e.target.isContentEditable||e.target.tagName=="INPUT")return;if(e.key=="ArrowLeft")go(cur-1);if(e.key=="ArrowRight")go(cur+1)});
+
+// musik
+function playing(on){document.body.classList.toggle("playing",on);$("#play").textContent=on?"⏸":"▶";$("#np").textContent=on?"Now Playing · musik latar":"Musik dijeda"}
+$("#play").onclick=()=>{if(au.paused)au.play().then(()=>playing(true)).catch(()=>toast("File musik belum ada. Taruh musik.mp3 di folder yang sama dengan index.html."));else{au.pause();playing(false)}};
+$("#vol").oninput=e=>au.volume=e.target.value;au.volume=.6;
+
+// dekorasi latar
+for(let i=0;i<7;i++){const s=document.createElement("span");s.textContent="🎈";s.style.cssText="left:"+(5+i*14)+"%;animation-duration:"+(20+i*3)+"s;animation-delay:-"+(i*4)+"s";$("#fl").append(s)}
+for(let i=0;i<3;i++){const s=document.createElement("span");s.className="c";s.textContent="☁️";s.style.cssText="top:"+(10+i*22)+"%;animation-delay:-"+(i*22)+"s";$("#fl").append(s)}
+
+(async()=>{let d=await idbGet();if(!(d&&d.S&&d.S.length==15)){try{const r=await fetch("album.json");d=r.ok?await r.json():null}catch(e){d=null}}if(d&&d.S&&d.S.length==15){S=d.S;P=d.P||{}}else init();render()})();
+</script>
+</body>
+</html>
